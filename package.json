@@ -1,0 +1,41 @@
+{
+  "name": "calypso_distro",
+  "version": "1.1.0",
+  "description": "Representacion grafica de planeacion con distribucion numerica",
+  "productName": "Calypso Distribucion",
+  "cordovaId": "org.cordova.quasar.app",
+  "author": "Jairo Vanegas <jhvangar@gmail.com>",
+  "private": true,
+  "scripts": {
+    "test": "echo \"No test specified\" && exit 0",
+    "build": "quasar build -c --mode electron --target win32 --arch x64 --theme mat"
+  },
+  "dependencies": {
+    "exceljs": "^1.6.0"
+  },
+  "devDependencies": {
+    "d3": "^5.0.1",
+    "devtron": "1.4.0",
+    "electron": "1.8.3",
+    "electron-builder": "^20.8.1",
+    "electron-debug": "1.5.0",
+    "electron-devtools-installer": "2.2.1",
+    "electron-packager": "11.1.0",
+    "electron-squirrel-startup": "^1.0.0",
+    "electron-winstaller": "^2.6.4",
+    "quasar-cli": "^0.15.14",
+    "topojson": "^3.0.2",
+    "topojson-client": "^3.0.0",
+    "topojson-server": "^3.0.0",
+    "topojson-simplify": "^3.0.2"
+  },
+  "engines": {
+    "node": ">= 8.9.0",
+    "npm": ">= 5.6.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 10"
+  ]
+}
