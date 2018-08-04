@@ -42,7 +42,7 @@
 import fs from "fs";
 
 export default {
-  name: "LayoutDefault",
+  name: "MyLayout",
   data() {
     return {
       drawer: true,

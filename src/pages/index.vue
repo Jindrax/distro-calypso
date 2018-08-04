@@ -1,7 +1,7 @@
 <template>
   <q-page class="flex flex-center" id="viewport">
     <q-resize-observable @resize="onResize" />
-    <tooltip v-if="d != undefined" v-show="false" :d="d" ref="tooltip"/>
+    <tooltip v-if="d != undefined" v-show="showingTooltip" :d="d" :mouse="mouse" :windowHeight="height" :leftSide="leftSide" ref="tooltip"/>
   </q-page>
 </template>
 
@@ -45,7 +45,7 @@ div.tooltip {
 import { dom } from "quasar";
 const { height, width } = dom;
 import * as d3 from "d3";
-import * as topojson from "topojson";
+import {feature, mesh} from "topojson-client";
 import fs from "fs";
 import Tooltip from "../components/tooltip";
 
@@ -54,33 +54,29 @@ export default {
   data: function() {
     return {
       svg: undefined,
-      tooltip: undefined,
-      tooltipOffset: { x: 15, y: -15 },
+      mouse: {
+        x: 0,
+        y: 0
+      },
+      showingTooltip: true,
       height: 0,
       leftSide: 0,
       d: undefined
     };
   },
-  computed: {
-    bottomMargin: function() {
-      return this.height * 0.75;
-    }
-  },
   methods: {
     onResize(size) {
+      if(size.height == this.height){
+        return;
+      }
+      console.log(size.height);
       var self = this;
       this.leftSide = this.$el.getBoundingClientRect().left;
-      this.height = size.height;
+      this.height = size.height;      
       let file_path = __statics + "/consolidado.json";
       let vp = document.getElementById("viewport");
       if (this.svg != undefined) {
         d3.select("svg").remove();
-      }
-      if (this.tooltip == undefined) {
-        this.tooltip = d3
-          .select(vp)
-          .append("div")
-          .attr("class", "tooltip");
       }
       var svg = d3
         .select(vp)
@@ -91,7 +87,7 @@ export default {
         .style("overflow", "hidden");
       var data = JSON.parse(fs.readFileSync(file_path, "utf8"));
       if (data != undefined) {
-        var land = topojson.feature(data, {
+        var land = feature(data, {
           type: "GeometryCollection",
           geometries: data.objects.mpios.geometries.filter(function(d) {
             return ((d.id / 10000) | 0) % 100 !== 99;
@@ -140,12 +136,12 @@ export default {
             self.hideTooltip(self);
           })
           .on("click", function(d) {
-            console.log("funciona");
+            console.log();
           });
         svg
           .append("path")
           .datum(
-            topojson.mesh(data, data.objects.mpios, function(a, b) {
+            mesh(data, data.objects.mpios, function(a, b) {
               return a !== b;
             })
           )
@@ -157,28 +153,14 @@ export default {
     showTooltip(d, self) {
       self.d = d;
       self.moveTooltip(self);
-      self.tooltip
-        .style("display", "block")
-        .html(self.$refs.tooltip.$el.innerHTML);
+      self.showingTooltip = true;
     },
     moveTooltip(self) {
-      console.log(self.$refs.tooltip.$el.clientHeight);
-      self.tooltip
-        .style("top", function() {
-          if (d3.event.pageY > self.bottomMargin) {
-            return (
-              d3.event.pageY -
-              self.tooltip.node().getBoundingClientRect().height +
-              "px"
-            );
-          } else {
-            return d3.event.pageY + self.tooltipOffset.y + "px";
-          }
-        })
-        .style("left", d3.event.pageX + self.tooltipOffset.x - self.leftSide + "px");
+      self.mouse.x = d3.event.pageX;
+      self.mouse.y = d3.event.pageY;
     },
     hideTooltip(self) {
-      self.tooltip.style("display", "none");
+      //self.showingTooltip = false;
     }
   },
   components:{

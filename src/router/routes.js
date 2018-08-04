@@ -1,16 +1,21 @@
 
-export default [
+const routes = [
   {
     path: '/',
-    component: () => import('layouts/default'),
+    component: () => import('layouts/MyLayout.vue'),
     children: [
-      { path: '', component: () => import('pages/index') },
-      { path: 'edit', name:'edit', component: () => import('pages/edit'), props:true }
+      { path: '', component: () => import('pages/index.vue') },
+      { path: 'edit', name:'edit', component: () => import('pages/edit.vue'), props:true }
     ]
-  },
-
-  { // Always leave this as last one
-    path: '*',
-    component: () => import('pages/404')
   }
 ]
+
+// Always leave this as last one
+if (process.env.MODE !== 'ssr') {
+  routes.push({
+    path: '*',
+    component: () => import('pages/404.vue')
+  })
+}
+
+export default routes
