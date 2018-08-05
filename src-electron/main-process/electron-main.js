@@ -22,7 +22,7 @@ function createWindow () {
 
   mainWindow.maximize()
 
-  //mainWindow.setMaximizable(false)
+  mainWindow.setMaximizable(false)
 
   mainWindow.loadURL(process.env.APP_URL)
 
