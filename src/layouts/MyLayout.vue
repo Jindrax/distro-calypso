@@ -1,6 +1,6 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-layout-header>
+    <q-layout-header ref="header">
       <q-toolbar
         color="negative"
         :glossy="$q.theme === 'mat'"
@@ -33,7 +33,7 @@
     </q-layout-drawer>
 
     <q-page-container>
-      <router-view />
+      <router-view :header="header"/>
     </q-page-container>
   </q-layout>
 </template>
@@ -47,7 +47,8 @@ export default {
     return {
       drawer: true,
       departamentos: undefined,
-      editando: false
+      editando: false,
+      header: undefined
     };
   },
   created: function() {
@@ -72,6 +73,9 @@ export default {
         });
       }
     })
+  },
+  mounted: function(){
+    this.header = this.$refs.header.$el;
   },
   methods: {
     enrutar: function(){

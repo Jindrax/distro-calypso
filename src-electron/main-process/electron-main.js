@@ -20,6 +20,10 @@ function createWindow () {
     useContentSize: true
   })
 
+  mainWindow.maximize()
+
+  //mainWindow.setMaximizable(false)
+
   mainWindow.loadURL(process.env.APP_URL)
 
   mainWindow.on('closed', () => {

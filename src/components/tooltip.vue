@@ -19,37 +19,39 @@
 <script>
 export default {
   name: "tooltip",
-  props: ['d', 'mouse', 'windowHeight', 'leftSide'],
+  props: ['d', 'mouse', 'parent', 'leftSide'],
   data() {
     return {
       absolute: 'absolute',
       offset: {
         x: 5,
-        y: -5
+        y: 5
       },
-      height: 0
+      height: 0,
+      bottomMargin: 100000
     };
   },
+  mounted: function(){
+    this.height = this.$el.clientHeight;
+    this.bottomMargin = this.parent.clientHeight + this.parent.offsetTop - this.height - this.offset.y;
+  },
+  watch:{
+    mouse: function(val){
+      this.height = this.$el.clientHeight;
+      this.bottomMargin = this.parent.clientHeight + this.parent.offsetTop - this.height - this.offset.y;
+    }
+  },
   computed:{
-    bottomMargin: function(){
-      return this.windowHeight - this.height;
-    },
     posX: function(){
-      console.log('mouseX: ', this.mouse.x);
       return this.mouse.x + this.offset.x - this.leftSide + "px"
     },
     posY: function(){
       if (this.mouse.y > this.bottomMargin) {
-            console.log('mouseY: ', this.mouse.y);
-            return (this.mouse.y - this.height + "px");
+            return (this.mouse.y - this.height - this.parent.offsetTop + "px");
           } else {
-            console.log('mouseY: ', this.mouse.y);
-            return this.mouse.y + this.offset.y + "px";
+            return this.mouse.y + this.offset.y - this.parent.offsetTop + "px";
           }
     }
-  },
-  mounted() {
-    this.height = this.$el.clientHeight;
   },
 };
 </script>

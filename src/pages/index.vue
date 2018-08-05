@@ -1,21 +1,11 @@
 <template>
-  <q-page class="flex flex-center" id="viewport">
-    <q-resize-observable @resize="onResize" />
-    <tooltip v-if="d != undefined" v-show="showingTooltip" :d="d" :mouse="mouse" :windowHeight="height" :leftSide="leftSide" ref="tooltip"/>
+  <q-page class="flex flex-center" id="viewport" :style="{overflow: 'hidden'}" >
+    <q-resize-observable />
+    <tooltip v-if="d != undefined" v-show="showingTooltip" :d="d" :mouse="mouse" :parent="parent" :leftSide="leftSide" ref="tooltip"/>
   </q-page>
 </template>
 
 <style>
-
-div.tooltip {
-  position: absolute;
-  background-color: white;
-  border: 1px solid black;
-  color: black;
-  font-weight: bold;
-  padding: 3px 3px;
-  display: none;
-}
 
 .tract-border {
   fill: none;
@@ -51,6 +41,7 @@ import Tooltip from "../components/tooltip";
 
 export default {
   name: "PageIndex",
+  props: ["header"],
   data: function() {
     return {
       svg: undefined,
@@ -61,18 +52,26 @@ export default {
       showingTooltip: true,
       height: 0,
       leftSide: 0,
-      d: undefined
+      d: undefined,
+      parent: undefined
     };
   },
-  methods: {
-    onResize(size) {
-      if(size.height == this.height){
-        return;
+  watch:{
+    header: function(val){
+      if(val!=undefined){
+        this.setMap();
       }
-      console.log(size.height);
-      var self = this;
-      this.leftSide = this.$el.getBoundingClientRect().left;
-      this.height = size.height;      
+    }
+  },
+  mounted: function(){
+    this.parent = this.$el;
+  },
+  methods: {
+    setMap() {
+      let self = this;
+      let dimensions = this.$el.getBoundingClientRect();
+      this.leftSide = dimensions.left;
+      this.height = dimensions.height - this.header.getBoundingClientRect().height;      
       let file_path = __statics + "/consolidado.json";
       let vp = document.getElementById("viewport");
       if (this.svg != undefined) {
@@ -82,8 +81,8 @@ export default {
         .select(vp)
         .append("svg")
         .attr("id", "lienzo")
-        .attr("width", size.width)
-        .attr("height", size.height)
+        .attr("width", dimensions.width)
+        .attr("height", this.height)
         .style("overflow", "hidden");
       var data = JSON.parse(fs.readFileSync(file_path, "utf8"));
       if (data != undefined) {
@@ -93,7 +92,7 @@ export default {
             return ((d.id / 10000) | 0) % 100 !== 99;
           })
         });
-        var margin = { w: size.width * (3 / 100), h: size.height * (3 / 100) };
+        var margin = { w: dimensions.width * (3 / 100), h: this.height * (3 / 100) };
         var path = d3.geoPath().projection(
           d3
             .geoTransverseMercator()
@@ -101,7 +100,7 @@ export default {
             .fitExtent(
               [
                 [margin.w, margin.h],
-                [size.width - margin.h, size.height - margin.h]
+                [dimensions.width - margin.h, this.height - margin.h]
               ],
               land
             )
@@ -160,7 +159,7 @@ export default {
       self.mouse.y = d3.event.pageY;
     },
     hideTooltip(self) {
-      //self.showingTooltip = false;
+      self.showingTooltip = false;
     }
   },
   components:{
