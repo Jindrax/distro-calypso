@@ -14,6 +14,10 @@
   pointer-events: none;
 }
 
+.cat0 {
+  fill: silver;
+}
+
 .cat1 {
   fill: green;
 }
@@ -111,16 +115,20 @@ export default {
           .enter()
           .append("path")
           .attr("class", function(d) {
-            if (d.properties.category == "1") {
+            if(d.properties["Categoria"] == null || d.properties["Categoria"] == undefined){
+              console.log(d.properties.name);
+              return "cat0";
+            }
+            if (d.properties["Categoria"] == "1") {
               return "cat1";
             }
-            if (d.properties.category == "2") {
+            if (d.properties["Categoria"] == "2") {
               return "cat2";
             }
-            if (d.properties.category == "3") {
+            if (d.properties["Categoria"] == "3") {
               return "cat3";
             }
-            if (d.properties.category == "4") {
+            if (d.properties["Categoria"] == "4") {
               return "cat4";
             }
           })

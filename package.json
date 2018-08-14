@@ -12,7 +12,9 @@
   },
   "dependencies": {
     "d3": "^5.5.0",
-    "topojson-client": "^3.0.0"
+    "exceljs": "^1.6.0",
+    "topojson-client": "^3.0.0",
+    "xlsx": "^0.13.3"
   },
   "devDependencies": {
     "devtron": "^1.4.0",

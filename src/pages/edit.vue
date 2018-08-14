@@ -56,8 +56,8 @@ export default {
         return console.log(err);
       }
       console.log("The consolidado was saved!");
+      this.$root.$emit('save-totals', 'message');
     });
-    this.$root.$emit('save-totals', 'message');
   },
   computed:{
     muns: function(){

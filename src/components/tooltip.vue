@@ -4,7 +4,7 @@
       {{d.properties.name}}
     </q-card-title>
     <q-card-main class="q-py-xs bg-white">
-      <q-item v-for="(value, key) in d.properties" :key="key" dense class="q-px-xs">
+      <q-item v-for="(value, key) in d.properties" v-if="!bannedProps.includes(key)" :key="key" dense class="q-px-xs">
         <q-item-side>
           {{key}}:
         </q-item-side>
@@ -28,7 +28,8 @@ export default {
         y: 5
       },
       height: 0,
-      bottomMargin: 100000
+      bottomMargin: 100000,
+      bannedProps: ['name']
     };
   },
   mounted: function(){
@@ -39,6 +40,9 @@ export default {
     mouse: function(val){
       this.height = this.$el.clientHeight;
       this.bottomMargin = this.parent.clientHeight + this.parent.offsetTop - this.height - this.offset.y;
+    },
+    d: function(val){
+      //console.log(this.d);
     }
   },
   computed:{
