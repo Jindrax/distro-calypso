@@ -9,7 +9,7 @@
         <q-toolbar-title>
           Distribucion Calypso
         </q-toolbar-title>
-        <q-btn :icon="editando ? 'save' : 'build'" color="primary" :label="editando ? 'Guardar' : 'Editar'" @click="enrutar" />
+        <q-btn :icon="'folder'" color="primary" :label="'Cargar'" @click="recargar" />
       </q-toolbar>
     </q-layout-header>
 
@@ -26,7 +26,7 @@
         <q-list-header :class="['dock-font']">Departamentos</q-list-header>  
           <q-collapsible v-for="(dept, key) in departamentos" :key="key" :label="key" group='depts' :ref='key'>
               <q-item v-for="(value, key) in dept" :key="key">
-                <q-item-main :label="value.texto+ +value.valor" :class="['dock-info']"/>
+                <q-item-main :label="key + ': ' + value" :class="['dock-info']"/>
               </q-item>
           </q-collapsible>
       </q-list>
@@ -86,6 +86,9 @@ export default {
         this.$router.replace({name:'edit', params:{data:this.departamentos}});
         this.editando = true;
       }
+    },
+    recargar: function(){
+      this.$q.electron.ipcRenderer.send('reload');
     }
   }
 };

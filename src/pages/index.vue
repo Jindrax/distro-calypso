@@ -69,6 +69,17 @@ export default {
   },
   mounted: function(){
     this.parent = this.$el;
+    this.$q.electron.ipcRenderer.on('reloaded', ()=>{
+      this.$q.notify({
+            message: 'Se han cargado los cambios satisfactoriamente',
+            timeout: 1500,
+            icon: 'save'
+      });
+      this.setMap();
+    });
+  },
+  beforeDestroy: function(){
+    this.$q.electron.ipcRenderer.removeAllListeners('reloaded');
   },
   methods: {
     setMap() {

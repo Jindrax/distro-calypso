@@ -4,7 +4,7 @@ const biblioteca = './colombia-municipios.json';
 //Produccion
 //const map = __statics + '/consolidado.json';
 
-const includes = ['ANAPOIMA', 'GIRARDOT'];
+const includes = ['ESPINAL', 'PITALITO'];
 
 fs.readFile(mapFile, 'utf8', (err, dataMap) => {
   if (err != null) {
