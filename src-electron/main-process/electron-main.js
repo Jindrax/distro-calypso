@@ -42,6 +42,9 @@ function loadData() {
           'HUILA': {},
           'CAQUETA': {},
         };
+        let municipios_visitados = [];
+        let excluidos = workbook.getWorksheet('SISTEMA').getRow(2).values;
+        let no_acumulables = workbook.getWorksheet('SISTEMA').getRow(4).values;
         workbook.eachSheet((sheet, sheetId) => {
           sheet.eachRow((row, rowNumber) => {
             let header = typeof row.getCell(1).value == 'string' ? row.getCell(1).value.replace(regex, ' ').trim() : 'null';
@@ -55,7 +58,7 @@ function loadData() {
                   let prop = cell.value.replace(regex, ' ').trim();
                   let value = dataRow.getCell(colNumber).value;
                   newData[prop] = value;
-                  if (typeof value == 'number') {
+                  if (typeof value == 'number' && !excluidos.includes(prop)) {
                     numericProps[prop] = value;
                   }
                 }
@@ -66,19 +69,24 @@ function loadData() {
               if (foundMunicipio != null || foundMunicipio != undefined) {
                 newData.name = foundMunicipio.name;
                 foundMunicipio.properties = newData;
-                if (departamentos.includes(foundMunicipio.dpt)) {
-                  for (let prop in numericProps) {
-                    if(totales[foundMunicipio.dpt][prop]==undefined){
-                      totales[foundMunicipio.dpt][prop] = numericProps[prop];
+                for(let prop in numericProps){
+                  if(municipios_visitados.includes(foundMunicipio.name) && no_acumulables.includes(prop)){
+                    console.log('Municipio: ', foundMunicipio.name);
+                  }else{
+                    if(departamentos.includes(foundMunicipio.dpt)){
+                      if(totales[foundMunicipio.dpt][prop]==undefined){
+                        totales[foundMunicipio.dpt][prop] = numericProps[prop];
+                      }else{
+                        totales[foundMunicipio.dpt][prop] += numericProps[prop];
+                      }
+                    }else{
+                      if(totales['Regional'][prop]==undefined){
+                        totales['Regional'][prop] = numericProps[prop];
+                      }else{
+                        totales['Regional'][prop] += numericProps[prop];
+                      }
                     }
-                    totales[foundMunicipio.dpt][prop] += numericProps[prop];
-                  }
-                } else {
-                  for (let prop in numericProps) {
-                    if(totales['Regional'][prop]==undefined){
-                      totales['Regional'][prop] = numericProps[prop];
-                    }
-                    totales['Regional'][prop] += numericProps[prop];
+                    municipios_visitados.push(foundMunicipio.name);
                   }
                 }
               } else {
