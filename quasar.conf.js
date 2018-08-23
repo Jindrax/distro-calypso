@@ -137,7 +137,8 @@ module.exports = function (ctx) {
 
         // Window only
         // win32metadata: { ... }
-        all: true,
+        arch: ['ia32', 'x64'],
+        platform: 'win32',
         appVersion: '1.3.0',
         buildVersion: '1.3.0',
         executableName: 'distro-calypso',
